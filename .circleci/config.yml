@@ -1,10 +1,43 @@
-- run:
-    name: Debug SSH connectivity
-    command: |
-      set -x
-      echo "HOST=$CENTOS_HOST USER=$CENTOS_USER"
-      nc -vz $CENTOS_HOST 22 || true
-      ssh -o ConnectTimeout=10 -v ${CENTOS_USER}@${CENTOS_HOST} "echo ok"
+version: 2.1
 
+jobs:
+  mkdir_on_centos:
+    machine:
+      enabled: true
+    resource_class: network-test/circleci-test
+    steps:
+      - checkout
+
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:KN4ZGGpYs7D7XnjHCUUEsCsWu6ASmJf7jiyVoSI755Q"  # ←あなたのフィンガープリントに置換
+
+      - run:
+          name: Add CentOS host key
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
+
+      # 接続デバッグ（必要なければ後で消してOK）
+      - run:
+          name: Debug SSH connectivity
+          command: |
+            set -x
+            echo "HOST=$CENTOS_HOST USER=$CENTOS_USER"
+            nc -vz "$CENTOS_HOST" 22 || true
+            ssh -o ConnectTimeout=10 -v "${CENTOS_USER}@${CENTOS_HOST}" "echo ok"
+
+      - run:
+          name: Create directory on CentOS
+          command: |
+            : "${TARGET_DIR:=/srv/mydir}"
+            : "${SSH_PORT:=22}"
+            ssh -p "$SSH_PORT" "${CENTOS_USER}@${CENTOS_HOST}" \
+              "sudo mkdir -p '${TARGET_DIR}' && sudo chown ${CENTOS_USER}:${CENTOS_USER} '${TARGET_DIR}'"
+
+workflows:
+  build:
+    jobs:
+      - mkdir_on_centos
 
 
