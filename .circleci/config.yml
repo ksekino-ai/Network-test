@@ -7,7 +7,7 @@ jobs:
       enabled: true
     # ← あなたの Self-Hosted Runner の resource_class に変更
     #   例: sekino-lab/proxmox-ubuntu
-    resource_class: your-namespace/your-runner
+    resource_class: network-test/circleci-test
 
     steps:
       - checkout
