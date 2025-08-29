@@ -10,22 +10,20 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:KN4ZGGpYs7D7XnjHCUUEsCsWu6ASmJf7jiyVoSI755Q"  # ←あなたのフィンガープリントに置換
+            - "SHA256:KN4ZGGpYs7D7XnjHCUUEsCsWu6ASmJf7jiyVoSI755Q"
 
       - run:
-    name: Add CentOS host key safely
-    command: |
-      set -euo pipefail
-      mkdir -p ~/.ssh
-      # 既存のエントリを削除（IP/ホスト名どちらでも）
-      ssh-keygen -R "$CENTOS_HOST" >/dev/null 2>&1 || true
-      # 取得して known_hosts に追加
-      ssh-keyscan -T 5 -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
-      # 取れているか検証
-      ssh-keygen -F "$CENTOS_HOST" -f ~/.ssh/known_hosts >/dev/null
+          name: Add CentOS host key safely
+          command: |
+            set -euo pipefail
+            mkdir -p ~/.ssh
+            # 既存のエントリを削除（IP/ホスト名どちらでも）
+            ssh-keygen -R "$CENTOS_HOST" >/dev/null 2>&1 || true
+            # 取得して known_hosts に追加
+            ssh-keyscan -T 5 -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
+            # 取れているか検証
+            ssh-keygen -F "$CENTOS_HOST" -f ~/.ssh/known_hosts >/dev/null
 
-
-      # 接続デバッグ（必要なければ後で消してOK）
       - run:
           name: Debug SSH connectivity
           command: |
@@ -46,5 +44,3 @@ workflows:
   build:
     jobs:
       - mkdir_on_centos
-
-
