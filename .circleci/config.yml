@@ -36,5 +36,4 @@ workflows:
   build:
     jobs:
       - mkdir_on_centos
-#これはテストです。
-#これはテスト２です。
+#では今回はVSCODE側で修正してPUSHしてみます！
