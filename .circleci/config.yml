@@ -1,42 +1,10 @@
-# .circleci/config.yml
-version: 2.1
+- run:
+    name: Debug SSH connectivity
+    command: |
+      set -x
+      echo "HOST=$CENTOS_HOST USER=$CENTOS_USER"
+      nc -vz $CENTOS_HOST 22 || true
+      ssh -o ConnectTimeout=10 -v ${CENTOS_USER}@${CENTOS_HOST} "echo ok"
 
-jobs:
-  mkdir_on_centos:
-    machine:
-      enabled: true
-    # ← あなたの Self-Hosted Runner の resource_class に変更
-    #   例: sekino-lab/proxmox-ubuntu
-    resource_class: network-test/circleci-test
-
-    steps:
-      - checkout
-
-      # 追加SSH鍵をロード（CircleCIのProject Settingsに登録した鍵の指紋に置き換え）
-      - add_ssh_keys:
-          fingerprints:
-            - "aa:bb:cc:dd:ee:ff:11:22:33:44:55:66:77:88:99:00"
-
-      # known_hosts 登録（初回の対話回避）
-      - run:
-          name: Add CentOS host key
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
-
-      # CentOSで mkdir 実行（sudo不要なら外してください）
-      - run:
-          name: Create directory on CentOS
-          command: |
-            : "${TARGET_DIR:=/srv/mydir}"
-            ssh "${CENTOS_USER}@${CENTOS_HOST}" "sudo mkdir -p '${TARGET_DIR}' && sudo chown ${CENTOS_USER}:${CENTOS_USER} '${TARGET_DIR}'"
-
-workflows:
-  version: 2
-  build:
-    jobs:
-      - mkdir_on_centos
-#では今回はVSCODE側で修正してPUSHしてみます！
-#これが最後だ！
 
 
