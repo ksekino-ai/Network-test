@@ -10,7 +10,7 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:KN4ZGGpYs7D7XnjHCUUEsCsWu6ASmJf7jiyVoSI755Q"
+            - "SHA256:INhI0QRKnNV6ShUTo25EKc2A++IjgaQ/UOfQNJODL4c"
 
       - run:
           name: Add CentOS host key safely
@@ -44,4 +44,4 @@ workflows:
   build:
     jobs:
       - mkdir_on_centos
-#2025/8/30に修正した！
+#2025/8/30 23:51に修正した！
