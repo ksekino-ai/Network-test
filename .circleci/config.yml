@@ -44,3 +44,4 @@ workflows:
   build:
     jobs:
       - mkdir_on_centos
+#2025/8/30に修正した！
