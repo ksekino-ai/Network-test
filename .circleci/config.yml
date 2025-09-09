@@ -19,8 +19,8 @@ jobs:
             mkdir -p ~/.ssh
             # 既存のエントリを削除（IP/ホスト名どちらでも）
             ssh-keygen -R "$CENTOS_HOST" >/dev/null 2>&1 || true
-            # 取得して known_hosts に追加
-            ssh-keyscan -T 5 -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
+            # 取得して known_hosts に追加(5秒を10秒に変更した)
+            ssh-keyscan -T 10 -H "$CENTOS_HOST" >> ~/.ssh/known_hosts
             # 取れているか検証
             ssh-keygen -F "$CENTOS_HOST" -f ~/.ssh/known_hosts >/dev/null
 
@@ -44,4 +44,4 @@ workflows:
   build:
     jobs:
       - mkdir_on_centos
-#2025/9/9 18:20に修正した！
+#2025/9/9 22:26に変更した！
